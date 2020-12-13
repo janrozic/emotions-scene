@@ -1,0 +1,103 @@
+$sqrt2: 1.41421356237;
+
+.emotions-picker {
+  position: absolute;
+  z-index: 3;
+  top: 10px;
+  left: 10px;
+  .user {
+    position: relative;
+    width: 200px;
+    height: 200px / $sqrt2;
+    background: red;
+    i {
+      position: absolute;
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: blue;
+    }
+  }
+}
+
+/********* main ************/
+
+main.app {
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+.foreground {
+  height: 100%;
+  position: relative;
+  z-index: 2;
+}
+button {
+  position: relative;
+  z-index: 1;
+}
+.controls {
+  z-index: 10;
+}
+
+/********* weather ************/
+
+.weather {
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.sun {
+  position: absolute;
+  right: 30%;
+  border-radius: 50%;
+  transform: translateX(50%);
+  box-shadow: 0 0 15px rgba(black, .4);
+}
+.sea {
+  position: absolute;
+  left: -10px;
+  top: 60%;
+}
+
+/********* garden ************/
+
+$flowers: 4;  //must match the number in component data
+
+#garden {
+  transform-origin: bottom left;
+  position: absolute;
+  width: 70vw;
+  height: 50vh;
+  left: 0;
+  bottom: 0;
+  .rose, .fern {
+    overflow: overlay;
+    position: absolute;
+    left: 0;
+    transform-origin: center;
+    $rotation: 15deg;
+    $padding: 8%;
+    @for $j from 1 through $flowers {
+      //@debug $icos;
+      &:nth-child(#{$j}) {
+        z-index: $j;
+        left: #{$padding + ($j - 1) * ((100% - random(2)*$padding) / (2*$flowers - 1))};
+        transform: scale((random())/2);
+      }
+    }
+    @for $jj from $flowers+1 through 2*$flowers {
+      //@debug $icos;
+      $j: $jj - $flowers;
+      &:nth-child(#{$jj}) {
+        z-index: $jj;
+        left: #{$padding + ($j - 1) * ((100% - random(2)*$padding) / (2*$flowers - 1))};
+        transform: scale(1/2+(random())/2);
+      }
+    }
+  }
+}

@@ -1,4 +1,5 @@
 import Flower from "components/helpers/Flower";
+import PaperFilter from "components/helpers/PaperFilter";
 import { randomRange } from "helpers/utils";
 import React from "react";
 import color from "tinycolor2";
@@ -22,9 +23,9 @@ export default class Rose extends Flower {
   }
 
   get grouptransform() {
-    let transform = "translate(0, " + this.state.size(15) + ") scale(0.85)";  // scale from bottom
-    if (this.state.size && this.flip) {
-      transform += " scale(-1,1) translate(" + this.state.size(-100) + ",0)";
+    let transform = "translate(0, " + this.props.size(15) + ") scale(0.85)";  // scale from bottom
+    if (this.props.size && this.flip) {
+      transform += " scale(-1,1) translate(" + this.props.size(-100) + ",0)";
     }
     return transform;
   }
@@ -33,8 +34,8 @@ export default class Rose extends Flower {
   }
 
   // FLOWER PETALS
-  get petal() {
-    return this.state.size([
+  get petalPath() {
+    return this.props.size([
       "M", 1 / 2, 0,
       "C", 1 / 2, 1 / 4, 1.1, 1, 1 / 2, 1,
       "S ", 1 / 8, 1 / 3, 1 / 2, 0,
@@ -47,7 +48,7 @@ export default class Rose extends Flower {
   }
   get petals() {
     const feeling = 60 + this.props.happy * 0.4 - this.props.sad * 0.6;
-    const rCenter = this.state.size([0.5, 0.75], this.top);
+    const rCenter = this.props.size([0.5, 0.75], this.top);
     const angles = [0, 0.3333, 0.666, 1]
       .map((a) => a * -1 * 0.8 * feeling)
     ;
@@ -63,7 +64,7 @@ export default class Rose extends Flower {
         },
         {
           stroke: this.red,
-          transform: "translate(" + this.state.size(this.top) + ",0) scale(-1, 1) " + side[i],
+          transform: "translate(" + this.props.size(this.top) + ",0) scale(-1, 1) " + side[i],
           fill: color.mix(this.red, color("white"), (ii + 0.5) * 17).toHexString(),
         },
       );
@@ -75,7 +76,7 @@ export default class Rose extends Flower {
   get thorn() {
     const x = 10 + this.props.angry / 10 - this.props.happy / 10;
     const y = x / 2;
-    return "-" + x * this.state.size + "," + y / 2 * this.state.size + " " + 0 + ",0 " + 0 + "," + y * this.state.size;
+    return "-" + x * this.props.size + "," + y / 2 * this.props.size + " " + 0 + ",0 " + 0 + "," + y * this.props.size;
   }
   get thorns(): JSX.Element[] {
     const fill = color.mix(
@@ -86,7 +87,7 @@ export default class Rose extends Flower {
     // returns a function of render function that returns an array of thorns
     return this.sections.map((a, i) => {
       const y = this.section2y(a);
-      const x = this.state.size(this.circleformula(y) + this.stemwidth * 0.25);
+      const x = this.props.size(this.circleformula(y) + this.stemwidth * 0.25);
       return (
         <use
           key={"thorn" + i}
@@ -94,7 +95,7 @@ export default class Rose extends Flower {
           xlinkHref="#thorn"
           fill={fill.toHexString()}
           x={x}
-          y={y * this.state.size}
+          y={y * this.props.size}
           transform={a % 2 ? "scale(-1, 1) translate(" + (-2 * x) + ", 0)" : ""}
         />
       );
@@ -106,7 +107,7 @@ export default class Rose extends Flower {
     const W = 30 - this.props.angry * 0.15;
     const thick = 10 + this.props.happy * 0.1;
     const drop = this.props.sad * thick * 0.01;
-    return this.state.size([
+    return this.props.size([
       "M", 0, 0,
       // 'S', W, H, W, 0,
       "C", W / 2, 0, W, thick + drop / 2, W, drop,
@@ -117,14 +118,14 @@ export default class Rose extends Flower {
   get leaves(): JSX.Element[] {
     return this.sections.map((a, i) => {
       const y = this.section2y(a);
-      const x = this.state.size(this.circleformula(y) + this.stemwidth * 0.75);
+      const x = this.props.size(this.circleformula(y) + this.stemwidth * 0.75);
       return (
         <use
           key={"leaf" + i}
           href="#leaf"
           xlinkHref="#leaf"
           x={x}
-          y={y * this.state.size}
+          y={y * this.props.size}
           transform={a % 2 ? "scale(-1, 1) translate(" + (-2 * x) + ", 0)" : ""}
         />
       );
@@ -133,7 +134,7 @@ export default class Rose extends Flower {
 
   // STEM
   get stem() {
-    return this.state.size([
+    return this.props.size([
       "M", 50, this.top,  // move to the top of stem arch (horizontal center of svg)
       "A", // outer arch
         this.stemradius, this.stemradius, 0, 0, 0, 50, 100,
@@ -147,7 +148,7 @@ export default class Rose extends Flower {
   }
 
   render() {
-    if (!this.state.size) {
+    if (!this.props.size) {
       return null;
     }
     const renderedPetals = this.petals.map((attrs, i) => {
@@ -155,27 +156,39 @@ export default class Rose extends Flower {
         <use key={"petal" + i} href="#petal" xlinkHref="#petal" {...attrs} />
       );
     });
-    return (
-      <svg className="rose">
-        <defs>
-          <filter id="shadow">
-            <feOffset result="offOut" in="SourceAlpha" dx="0" dy="0" />
-            <feGaussianBlur result="blurOut" in="offOut" stdDeviation={this.state.size(2)} />
-            <feBlend in="SourceGraphic" in2="blurOut" mode="normal" />
-          </filter>
-          <path id="petal" d={this.petal} fill={this.red} />
-          <path id="leaf" d={this.leaf} fill={this.green} />
-          <polygon id="thorn" points={this.thorn} />
-        </defs>
+    const defs = (
+      <div>
+        <svg>
+          <defs>
+            <PaperFilter id="paper-red-rose" angle={40} color={this.red} />
+            <PaperFilter id="paper-green-rose" angle={40} color={this.green} />
+            <mask id="mask-petal"><path d={this.petalPath} fill="white" /></mask>
+            <mask id="mask-stem"><path d={this.stem} fill="white" /></mask>
+            <mask id="mask-leaf"><path d={this.leaf} fill="white" /></mask>
+            <path id="petal" d={this.petalPath} filter="url(#paper-red-rose)" mask="url(#mask-petal)" />
+            <path id="leaf" d={this.leaf} filter="url(#paper-green-rose)" mask="url(#mask-leaf)" />
+            <polygon id="thorn" points={this.thorn} />
+          </defs>
+        </svg>
+      </div>
+    );
+    const instances = this.props.styles.map((st, i) => (
+      <svg key={i} className="rose" style={st}>
         <g transform={this.grouptransform} filter="url(#shadow)">
           {this.thorns}
           {this.leaves}
-          <path className="stem" d={this.stem} fill={this.green} />
-          <g transform={"translate(" + ((100 - this.top + this.stemwidth) * this.state.size / 2) + ", 0)"}>
+          <path className="stem" d={this.stem} filter="url(#paper-green-rose)" />
+          <g transform={"translate(" + ((100 - this.top + this.stemwidth) * this.props.size / 2) + ", 0)"}>
             {renderedPetals}
           </g>
         </g>
       </svg>
+    ));
+    return (
+      <>
+        {defs}
+        {instances}
+      </>
     );
   }
 }

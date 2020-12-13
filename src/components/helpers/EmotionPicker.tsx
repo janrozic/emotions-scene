@@ -112,7 +112,7 @@ export default class EmotionPicker extends React.Component<Props, State> {
         {this.button}
         {this.picker}
         <ul>
-          {Object.entries(pick(this.props, emotionTypes)).map(([k, v]) => (<li key={k}>{k}: {(v * 100).toFixed(0)}</li>))}
+          {Object.entries(pick(this.props, emotionTypes)).map(([k, v]) => (<li key={k}>{k}: {v.toFixed(0)}</li>))}
         </ul>
       </div>
     );

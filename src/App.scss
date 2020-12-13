@@ -84,7 +84,7 @@ $flowers: 4;  //must match the number in component data
     $padding: 8%;
     @for $j from 1 through $flowers {
       //@debug $icos;
-      &:nth-child(#{$j}) {
+      &:nth-of-type(#{$j}) {
         z-index: $j;
         left: #{$padding + ($j - 1) * ((100% - random(2)*$padding) / (2*$flowers - 1))};
         transform: scale((random())/2);
@@ -93,7 +93,7 @@ $flowers: 4;  //must match the number in component data
     @for $jj from $flowers+1 through 2*$flowers {
       //@debug $icos;
       $j: $jj - $flowers;
-      &:nth-child(#{$jj}) {
+      &:nth-of-type(#{$jj}) {
         z-index: $jj;
         left: #{$padding + ($j - 1) * ((100% - random(2)*$padding) / (2*$flowers - 1))};
         transform: scale(1/2+(random())/2);

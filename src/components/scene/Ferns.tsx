@@ -1,6 +1,7 @@
 import Flower from "components/helpers/Flower";
-import PaperFilter from "components/helpers/PaperFilter";
+import Gradient from "components/helpers/Gradient";
 import { randomRange } from "helpers/utils";
+import { range } from "lodash";
 import React from "react";
 import color from "tinycolor2";
 
@@ -98,9 +99,9 @@ export default class Fern extends Flower {
     const defs = (
       <div>
         <svg>
-          <PaperFilter id="paper-orange-fern" angle={40} color={this.orange} />
-          <PaperFilter id="paper-green-fern" angle={40} color={this.green} />
-          <mask id="mask-outerleaf-fern">
+          <Gradient id="gradient-orange-fern" angle={40} color={this.orange} />
+          <Gradient id="gradient-green-fern" angle={40} color={this.green} />
+          {/* <mask id="mask-outerleaf-fern">
             <ellipse cx={this.leafouter.cx} cy="0" rx={this.leafouter.rx} ry={this.leafouter.ry} fill="white" />
           </mask>
           <mask id="mask-innerleaf-fern">
@@ -108,7 +109,7 @@ export default class Fern extends Flower {
           </mask>
           <mask id="mask-leafstem-fern">
             <line x1="0" y1="0" x2={this.leafouter.cx} y2="0" strokeWidth={this.leafouter.stem} fill="white" />
-          </mask>
+          </mask> */}
           <g id="fernleaf">
             <line
               x1="0"
@@ -116,36 +117,43 @@ export default class Fern extends Flower {
               x2={this.leafouter.cx}
               y2="0"
               strokeWidth={this.leafouter.stem}
-              filter="url(#paper-green-fern)"
-              mask="url(#mask-leafstem-fern)"
+              fill="url(#gradient-green-fern)"
+              // mask="url(#mask-leafstem-fern)"
             />
             <ellipse
               cx={this.leafouter.cx}
               cy="0"
               rx={this.leafouter.rx}
               ry={this.leafouter.ry}
-              filter="url(#paper-green-fern)"
-              mask="url(#mask-outerleaf-fern)"
+              fill="url(#gradient-green-fern)"
+              // mask="url(#mask-outerleaf-fern)"
             />
             <ellipse
               cx={this.leafinner.cx}
               cy="0"
               rx={this.leafinner.rx}
               ry={this.leafinner.ry}
-              filter="url(#paper-orange-fern)"
-              mask="url(#mask-innerleaf-fern)"
+              fill="url(#gradient-orange-fern)"
+              // mask="url(#mask-innerleaf-fern)"
             />
           </g>
         </svg>
       </div>
     );
-    const instances = this.props.styles.map((st, i) => {
-      const leafs = this.leafs.map((point, i) => (
-        <use key={"l" + i} href="#fernleaf" xlinkHref="#fernleaf" x={point.x} y={point.y} transform={point.transform} />
+    const instances = range(0, this.props.count).map((st, i) => {
+      const leafs = this.leafs.map((point, il) => (
+        <use
+          key={"l" + il}
+          href="#fernleaf"
+          xlinkHref="#fernleaf"
+          x={point.x}
+          y={point.y}
+          transform={point.transform}
+        />
       ));
       return (
-        <svg key={i} className="fern" width={this.props.size * 100} height={this.props.size * 100} style={st}>
-          <g filter="url(#shadow)" transform={this.transform}>
+        <svg key={i} className="fern" width={this.props.size * 100} height={this.props.size * 100}>
+          <g fill="url(#shadow)" transform={this.transform}>
             <path
               className="stem"
               d={this.stem}

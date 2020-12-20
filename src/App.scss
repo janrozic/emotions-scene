@@ -82,22 +82,32 @@ $flowers: 4;  //must match the number in component data
     transform-origin: center;
     $rotation: 15deg;
     $padding: 8%;
-    @for $j from 1 through $flowers {
-      //@debug $icos;
+    @for $j from 1 through 2*$flowers {
+      $x: 10% + random(80%);
+      $y: random(100 - $x) + 0%;
       &:nth-of-type(#{$j}) {
-        z-index: $j;
-        left: #{$padding + ($j - 1) * ((100% - random(2)*$padding) / (2*$flowers - 1))};
-        transform: scale((random())/2);
+        z-index: 100 - $y;
+        left: calc(#{$x} - 125px);
+        bottom: $y;
+        // transform: scale((random())/2);
       }
     }
-    @for $jj from $flowers+1 through 2*$flowers {
-      //@debug $icos;
-      $j: $jj - $flowers;
-      &:nth-of-type(#{$jj}) {
-        z-index: $jj;
-        left: #{$padding + ($j - 1) * ((100% - random(2)*$padding) / (2*$flowers - 1))};
-        transform: scale(1/2+(random())/2);
-      }
-    }
+    // @for $j from 1 through $flowers {
+    //   //@debug $icos;
+    //   &:nth-of-type(#{$j}) {
+    //     z-index: $j;
+    //     left: #{$padding + ($j - 1) * ((100% - random(2)*$padding) / (2*$flowers - 1))};
+    //     transform: scale((random())/2);
+    //   }
+    // }
+    // @for $jj from $flowers+1 through 2*$flowers {
+    //   //@debug $icos;
+    //   $j: $jj - $flowers;
+    //   &:nth-of-type(#{$jj}) {
+    //     z-index: $jj;
+    //     left: #{$padding + ($j - 1) * ((100% - random(2)*$padding) / (2*$flowers - 1))};
+    //     transform: scale(1/2+(random())/2);
+    //   }
+    // }
   }
 }

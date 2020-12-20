@@ -1,10 +1,10 @@
 import SceneItem from "./SceneItem";
 
-type StyleProps = {
-  styles: React.CSSProperties[],
+type FlowerProps = {
+  count: number,
 };
 
-export default class Flower extends SceneItem<StyleProps> {
+export default class Flower extends SceneItem<FlowerProps> {
   sections: number[] = [];
   size = false;
   flip = Math.random() > 0.5;

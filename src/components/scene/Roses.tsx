@@ -23,9 +23,9 @@ export default class Rose extends Flower {
     return top;
   }
 
-  get grouptransform() {
-    return "translate(-125,0)";
-  }
+  // get grouptransform() {
+  //   return "translate(-125,0)";
+  // }
   get green() {
     return color.mix(color("green"), color("gray"), this.props.sad).toHexString();
   }
@@ -88,8 +88,8 @@ export default class Rose extends Flower {
       return (
         <use
           key={"thorn" + i}
-          href="#thorn"
-          xlinkHref="#thorn"
+          href="#thorn-rose"
+          xlinkHref="#thorn-rose"
           fill={fill.toHexString()}
           x={x}
           y={y * this.props.size}
@@ -119,8 +119,8 @@ export default class Rose extends Flower {
       return (
         <use
           key={"leaf" + i}
-          href="#leaf"
-          xlinkHref="#leaf"
+          href="#leaf-rose"
+          xlinkHref="#leaf-rose"
           x={x}
           y={y * this.props.size}
           transform={a % 2 ? "scale(-1, 1) translate(" + (-2 * x) + ", 0)" : ""}
@@ -135,8 +135,8 @@ export default class Rose extends Flower {
       return (
         <use
           key={"leaf" + i}
-          href="#leaf"
-          xlinkHref="#leaf"
+          href="#leaf-rose"
+          xlinkHref="#leaf-rose"
           x={x}
           y={y * this.props.size}
           transform={a % 2 ? "scale(-1, 1) translate(" + (-2 * x) + ", 0)" : ""}
@@ -166,28 +166,26 @@ export default class Rose extends Flower {
     }
     const renderedPetals = this.petals.map((attrs, i) => {
       return (
-        <use key={"petal" + i} href="#petal" xlinkHref="#petal" {...attrs} />
+        <use key={"petal" + i} href="#petal-rose" xlinkHref="#petal-rose" {...attrs} />
       );
     });
     const defs = (
-      <div>
-        <svg>
-          <defs>
-            <Gradient id="gradient-red-rose" angle={10} color={this.red} />
-            <Gradient id="gradient-green-rose" angle={40} color={this.green} />
-            {/* <mask id="mask-petal"><path d={this.petalPath} fill="white" /></mask>
-            <mask id="mask-stem"><path d={this.stem} fill="white" /></mask>
-            <mask id="mask-leaf"><path d={this.leaf} fill="white" /></mask> */}
-            <path id="petal" d={this.petalPath} fill="url(#gradient-red-rose)" />
-            <path id="leaf" d={this.leaf} fill="url(#gradient-green-rose)" />
-            <polygon id="thorn" points={this.thorn} />
-          </defs>
-        </svg>
-      </div>
+      <svg>
+        <defs>
+          <Gradient id="gradient-red-rose" angle={10} color={this.red} />
+          <Gradient id="gradient-green-rose" angle={40} color={this.green} />
+          {/* <mask id="mask-petal"><path d={this.petalPath} fill="white" /></mask>
+          <mask id="mask-stem"><path d={this.stem} fill="white" /></mask>
+          <mask id="mask-leaf"><path d={this.leaf} fill="white" /></mask> */}
+          <path id="petal-rose" d={this.petalPath} fill="url(#gradient-red-rose)" />
+          <path id="leaf-rose" d={this.leaf} fill="url(#gradient-green-rose)" />
+          <polygon id="thorn-rose" points={this.thorn} />
+        </defs>
+      </svg>
     );
     const instances = range(0, this.props.count).map((st, i) => (
-      <svg key={i} className="rose" width="250" height="423">
-        <g filter="url(#shadow)" transform={this.grouptransform}>
+      <svg key={i} className="rose" width="250" height="300">
+        <g filter="url(#shadow)">
           {this.thorns}
           {this.leaves}
           <path className="stem" d={this.stem} fill="url(#gradient-green-rose)" />
@@ -200,7 +198,7 @@ export default class Rose extends Flower {
     return (
       <>
         {defs}
-        {instances}
+        <div className="instances">{instances}</div>
       </>
     );
   }

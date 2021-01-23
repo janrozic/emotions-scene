@@ -40,6 +40,19 @@ export default class EmotionPicker extends React.Component<Props, State> {
     document.removeEventListener("mousemove", this.move);
     document.removeEventListener("mouseup", this.detachListeners);
   };
+  get rect() {
+    const holder = this.userRef.current;
+    if (!holder) {
+      this.detachListeners();
+    }
+    return holder?.getBoundingClientRect();
+  }
+  get a(): number {
+    return this.rect?.width || -1;
+  }
+  get b(): number {
+    return this.rect?.height || -1;
+  }
   move = (e: MouseEvent) => {
     const holder = this.userRef.current;
     if (!holder) {
@@ -72,9 +85,9 @@ export default class EmotionPicker extends React.Component<Props, State> {
     }
     const rect = holder.getBoundingClientRect();
     const maxDist = rect.width;
-    const top = Math.round(maxDist * (1 - this.props.happy/100)) + "px";
-    const sum = this.props.sad/100 + this.props.angry/100;
-    const left = Math.round(maxDist * (this.props.angry/100 / sum)) + "px";
+    const top = Math.round(maxDist * (1 - this.props.happy / 100)) + "px";
+    const sum = this.props.sad / 100 + this.props.angry / 100;
+    const left = Math.round(maxDist * (this.props.angry / 100 / sum)) + "px";
     // console.log({top, left});
     return {top, left};
   }

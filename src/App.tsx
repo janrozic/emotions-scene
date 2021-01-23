@@ -1,6 +1,7 @@
 import "App.scss";
 import EmotionPicker from "components/helpers/EmotionPicker";
 import Garden from "components/scene/Garden";
+import House from "components/scene/House";
 import Weather from "components/scene/Weather";
 import { Emotions, emotionTypes } from "helpers/types";
 import React from "react";
@@ -62,8 +63,8 @@ export default class App extends React.Component<{}, State> {
         <div className="foreground">
           {/* <House {...this.emotions} /> */}
           <Garden {...this.emotions} size={this.state.size} />
+          <House {...this.emotions} size={this.state.size} setEmotions={this.setEmotions} />
         </div>
-        <EmotionPicker {...this.emotions} setEmotions={this.setEmotions} />
       </main>
     );
   }

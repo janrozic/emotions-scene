@@ -189,3 +189,8 @@ export function getScrollParent(node: Element | null): Element | null {
 }
 
 export const randomRange = (min: number, max: number) => Math.random() * (max - min) + min;
+
+export function modulate(a: number, b: number, factor: number) {
+  factor = Math.min(100, Math.max(0, factor)) / 100;
+  return a * (1 - factor) + b * (factor);
+}

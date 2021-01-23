@@ -1,9 +1,10 @@
+import Gradient from "components/helpers/Gradient";
 import PaperFilter from "components/helpers/PaperFilter";
 import SceneItem from "components/helpers/SceneItem";
 import { randomRange } from "helpers/utils";
 import { range } from "lodash";
 import React from "react";
-import Ferns from "./Ferns";
+import Daisies from "./Daisies";
 import Roses from "./Roses";
 
 export default class Garden extends SceneItem {
@@ -26,9 +27,22 @@ export default class Garden extends SceneItem {
             </filter>
           </defs>
         </svg>
-        <div id="garden" style={{background: this.grass("0%"), transform: this.perspective(25, "left")}}>
-          <Ferns {...this.emotions} count={4} size={this.props.size} />
-          <Roses {...this.emotions} count={4} size={this.props.size} />
+        <div
+          id="garden"
+          // style={{background: this.grass("0%"), transform: this.perspective(25, "left")}}
+        >
+          <svg viewBox="0 0 5 2" preserveAspectRatio="none">
+            <defs>
+              <Gradient id="gradient-garden" angle={40} color={"green"} />
+            </defs>
+            <path d="M 0 2 L 5 2 C 3 2 3 0 0 0" fill="url(#gradient-garden)" />
+          </svg>
+          <div className="daisies">
+            <Daisies {...this.emotions} count={4} size={this.props.size} />
+          </div>
+          <div className="roses">
+            <Roses {...this.emotions} count={4} size={this.props.size} />
+          </div>
         </div>
       </>
     );

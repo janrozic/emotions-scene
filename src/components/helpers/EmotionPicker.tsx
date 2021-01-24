@@ -1,7 +1,8 @@
 import { Emotions, emotionTypes } from "helpers/types";
-import { generateFunction } from "helpers/utils";
-import { mapValues, pick } from "lodash";
+import { generateFunction, modulate } from "helpers/utils";
+import { mapValues, pick, flatten } from "lodash";
 import React from "react";
+import color from "tinycolor2";
 
 type Props = Emotions & {
   setEmotions: (e: Emotions) => void,
@@ -66,13 +67,17 @@ export default class EmotionPicker extends React.Component<Props, State> {
     }
     type EK = keyof Emotions;
     const w = rect.width;
-    const h = w * 0.866;
+    const k = 0.866;
+    const h = w * k;
     // translate to equal-sided triangle
     const hReal = rect.height;
     const hCorrection = this.hCorrection;
-    const top = Math.min(hReal, Math.max(0, e.pageY - rect.top)) * hCorrection;
+    let top = Math.min(hReal, Math.max(0, e.pageY - rect.top)) * hCorrection;
     const left = Math.min(w, Math.max(0, e.pageX - rect.left));
-    // console.log({left, top, h, w});
+    const min = left > rect.width / 2 ? (2 * k * w - 2 * k * left) : (2 * k * left);
+    if (top < h - min) {
+      top = h - min;
+    }
     const position: Position = {top, left};
     const emotionPositions: {[key in EK]: Position} = {
       happy: {top: 0, left: w / 2} ,
@@ -92,12 +97,12 @@ export default class EmotionPicker extends React.Component<Props, State> {
     // console.log(strengths);
     this.props.setEmotions(strengths);
   }
-  get position(): Pick<React.CSSProperties, "top" | "left"> {
+  get windowPosition(): Pick<React.CSSProperties, "top" | "left"> {
     const rect = this.rect;
     if (!rect) {
       return {
         top: 0,
-        left: 0,
+        left: "50%",
       };
     }
     const w = rect.width;
@@ -125,13 +130,42 @@ export default class EmotionPicker extends React.Component<Props, State> {
     document.addEventListener("mousemove", this.move);
     document.addEventListener("mouseup", this.detachListeners);
   }
+  get windowPath(): string[] {
+    const h = this.props.happy;
+    const a = this.props.angry;
+    const P1 = [3, 6];  // bottom
+    const P2 = [6, 3];  // right
+    const P3 = [3, modulate(0, 2, h)]; // top
+    const P4 = [0, 3];  // left
+    const sideB = modulate(4, 3, a);
+    const sideT = modulate(2, 3, a);
+    const midL = modulate(1, 3, a);
+    const midR = modulate(5, 3, a);
+    const t: number[][] = [
+      [0, sideB, midL, modulate(6, 5, h), ...P1],
+      [midR, modulate(6, 5, h), 6, sideB, ...P2],
+      [6, sideT, midR, 0, ...P3],
+      [midL, 0, 0, sideT, ...P4],
+    ];
+    const aa = [
+      ["M", "0", "3"],
+      ...t.map((arr) => ["C", ...arr.map(String)]),
+    ];
+    return flatten(aa);
+  }
+  get windowColor(): string {
+    const base = color.mix(color("blue"), color("darkgray"), this.props.angry);
+    return color.mix(base, color("red"), this.props.happy).toHexString();
+  }
   get picker(): JSX.Element | null {
     if (this.state.camera) {
       return null;
     }
     return (
       <div className="user" onMouseDown={this.startDrag} ref={this.userRef}>
-        <i style={this.position} />
+        <svg style={this.windowPosition} viewBox="0 0 6 6">
+          <path d={this.windowPath.join(" ")} fill={this.windowColor} />
+        </svg>
       </div>
     );
   }

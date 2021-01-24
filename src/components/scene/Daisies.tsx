@@ -118,6 +118,7 @@ export default class Daisies extends Flower {
     const rotation = 360 / max;
     return (
       <use
+        key={i}
         href="#daisy-petal"
         xlinkHref="#daisy-petal"
         transform={"rotate(" + (rotation * i) + " " + s(-4) + " " + s(2) + " )"}

@@ -14,8 +14,8 @@ function fromColor(c: string): string {
 
 const Gradient: React.FunctionComponent<Props> = (props) => (
   <linearGradient id={props.id} gradientTransform={"rotate(" + props.angle + ")"}>
-    <stop offset="0%" stop-color={props.color} />
-    <stop offset="100%" stop-color={props.color2 || fromColor(props.color)} />
+    <stop offset="0%" stopColor={props.color} />
+    <stop offset="100%" stopColor={props.color2 || fromColor(props.color)} />
   </linearGradient>
 );
 

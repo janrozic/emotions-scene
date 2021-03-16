@@ -1,6 +1,6 @@
 import { Emotions, emotionTypes } from "helpers/types";
 import { generateFunction, modulate } from "helpers/utils";
-import { mapValues, pick, flatten } from "lodash";
+import { flatten, mapValues, pick } from "lodash";
 import React from "react";
 import color from "tinycolor2";
 
@@ -9,6 +9,7 @@ type Props = Emotions & {
 };
 type State = {
   camera: boolean,
+  first: boolean,
 };
 type Position = {
   top: number;
@@ -22,6 +23,7 @@ const distance = (a: Position, b: Position): number =>
 export default class EmotionPicker extends React.Component<Props, State> {
   state: State = {
     camera: false,
+    first: true,
   };
   userRef = React.createRef<HTMLDivElement>();
   componentWillUnmount() {
@@ -61,6 +63,9 @@ export default class EmotionPicker extends React.Component<Props, State> {
   //   return this.rect?.height || -1;
   // }
   move = (e: MouseEvent) => {
+    if (this.state.first) {
+      this.setState({first: false});
+    }
     const rect = this.rect;
     if (!rect) {
       return;
@@ -163,9 +168,10 @@ export default class EmotionPicker extends React.Component<Props, State> {
     }
     return (
       <div className="user" onMouseDown={this.startDrag} ref={this.userRef}>
-        <svg style={this.windowPosition} viewBox="0 0 6 6">
+        <svg style={this.windowPosition} viewBox="0 0 6 6" className={this.state.first ? "pulse" : ""}>
           <path d={this.windowPath.join(" ")} fill={this.windowColor} />
         </svg>
+        {this.state.first ? <div style={this.windowPosition} className="pulse">drag me around</div> : null}
       </div>
     );
   }
@@ -185,11 +191,13 @@ export default class EmotionPicker extends React.Component<Props, State> {
     }
     return (
       <div className="emotions-picker">
+        <ul>
+          <li title={String(this.props.happy)}>happy</li>
+          <li title={String(this.props.sad)}>sad</li>
+          <li title={String(this.props.angry)}>angry</li>
+        </ul>
         {this.button}
         {this.picker}
-        <ul>
-          {Object.entries(pick(this.props, emotionTypes)).map(([k, v]) => (<li key={k}>{k}: {v.toFixed(0)}</li>))}
-        </ul>
       </div>
     );
   }

@@ -26,9 +26,6 @@ export default class House extends SceneItem<Props> {
         {this.window}
         <div className="roof">
           <EmotionPicker {...this.emotions} setEmotions={this.props.setEmotions} />
-          happy
-          sad
-          angry
         </div>
       </div>
     );
